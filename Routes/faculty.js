@@ -7,7 +7,6 @@ const OTPgenerator = require("../functions-and-middlewares/OTPgenerator");
 const protected = require("../protected");
 const FACULTY = require("../Models/faculty");
 const send_OTP = require("../functions-and-middlewares/send_otp");
-const { application } = require("express");
 
 // ---------- POST routes ----------
 router.post("/register", async(req,res) => {
@@ -80,6 +79,38 @@ router.post("/OTP", async(req,res) => {
     catch(error) {
         console.log(error);
         return res.status(500).render("homepage", {
+            message: "Something went wrong, try again."
+        });
+    }
+});
+
+router.post("/login", async(req,res) => {
+    try {
+        if(!req.body.userEmail || !req.body.userPassword) {
+            return res.status(401).render("homepage", {
+                message: "Please fill all the required fields."
+            });
+        }
+        const tempfaculty = await FACULTY.findOne({email: req.body.userEmail});
+        if(!tempfaculty) {
+            return res.status(400).render("homepage", {
+                message: "User with entered details doesn't exists."
+            });
+        }
+        if(tempfaculty.password !== md5(req.body.userPassword)) {
+            return res.status(400).render("homepage", {
+                message: "Incorrect password."
+            });
+        }
+        const jwtToken = jwt.sign({ID: tempfaculty._id}, protected.SECRET_KEY);
+        res.cookie("JWT_token", jwtToken);
+        return res.status(200).render("faculty-dashboard", {
+            name: tempfaculty.name
+        });
+    }
+    catch(error) {
+        console.log(error);
+        res.status(500).render("homepage", {
             message: "Something went wrong, try again."
         });
     }
