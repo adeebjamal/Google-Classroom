@@ -21,6 +21,7 @@ app.set("view engine","ejs");
 // Adding routes
 app.use("/", require("./Routes/index"));
 app.use("/faculty", require("./Routes/faculty"));
+app.use("/student", require("./Routes/student"));
 
 app.listen(3000, () => {
     console.log("Server is running at port 3000. Go to http://localhost:3000");
