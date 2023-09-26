@@ -9,5 +9,11 @@
         <h2>Name: <%= classroom.name %></h2>
         <p>Description: <%= classroom.description %></p>
         <p>Classroom ID: <em><%= classroom._id %></em></p>
+        <hr>
+        <h2>List of assignments</h2>
+        <% for(let i=0; i<assignments.length; i++) { %>
+            <h3><%= i+1 %>. <%= assignments[i].title %></h3>
+            <p>Description: <%= assignments[i].description %></p>
+        <% } %>
     </body>
 </html>

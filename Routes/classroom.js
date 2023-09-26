@@ -50,8 +50,10 @@ router.get("/student/:classroomID", async(req,res) => {
         const foundStudent = await STUDENT.findOne({_id: decodedJWT.ID});
         if(foundStudent.classrooms.includes(req.params.classroomID)) {
             const foundClassroom = await CLASSROOM.findOne({_id: req.params.classroomID});
+            const foundAssignments = await ASSIGNMENT.find({classroomID: req.params.classroomID});
             return res.status(200).render("classroom-student", {
-                classroom: foundClassroom
+                classroom: foundClassroom,
+                assignments: foundAssignments
             });
         }
         else {
