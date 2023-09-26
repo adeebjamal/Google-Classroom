@@ -22,7 +22,7 @@
         <% for(let i=0; i<classrooms.length; i++) { %>
             <h4><%= i+1 %>. <%= classrooms[i].name %></h4>
             <p><%= classrooms[i].description %></p>
-            <a href=<%= "/classroom/"+classrooms[i]._id %>>View classroom</a>
+            <a href=<%= "/classroom/faculty/"+classrooms[i]._id %>>View classroom</a>
         <% } %>
     </body>
 </html>

@@ -5,6 +5,7 @@ const md5 = require("md5");
 // Importing user defined files and functions
 const STUDENT = require("../Models/student");
 const FACULTY = require("../Models/faculty");
+const CLASSROOM = require("../Models/classroom");
 const protected = require("../protected");
 const OTPgenerator = require("../functions-and-middlewares/OTPgenerator");
 const send_OTP = require("../functions-and-middlewares/send_otp");
@@ -80,7 +81,8 @@ router.post("/OTP", async(req,res) => {
             const createdUser = new STUDENT({
                 name: decodedJWT.userDetails.newName,
                 email: decodedJWT.userDetails.newEmail,
-                password: md5(decodedJWT.userDetails.newPassword)
+                password: md5(decodedJWT.userDetails.newPassword),
+                classrooms: []
             });
             await createdUser.save();
             res.clearCookie("studentDetails_and_OTP");
@@ -123,8 +125,11 @@ router.post("/login", async(req,res) => {
         }
         const jwtToken = jwt.sign({ID: tempUser._id}, protected.SECRET_KEY);
         res.cookie("JWT_token_student", jwtToken);
+        const foundClassrooms = await CLASSROOM.find({_id: {$in: tempUser.classrooms}});
         return res.status(200).render("student-dashboard", {
-            name: tempUser.name
+            name: tempUser.name,
+            classrooms: foundClassrooms,
+            message: ""
         });
     }
     catch(error) {

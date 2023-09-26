@@ -9,5 +9,20 @@
         <p>Logged in as <em>Student</em>.</p>
         <p>Welcome <%= name %>.</p>
         <a href="/student/logout">Logout</a>
+        <p style="color: red;"><%= message %></p>
+        <hr>
+        <h2>Join a classroom</h2>
+        <form action="/classroom/join" method="post">
+            <input type="text" name="classroomID" placeholder="Classroom ID"><br>
+            <button type="submit">Join</button>
+        </form>
+        <hr>
+        <h2>List of classrooms</h2>
+        <% for(let i=0; i<classrooms.length; i++) { %>
+            <h3><%= i+1 %>. <%= classrooms[i].name %></h3>
+            <p>Description: <%= classrooms[i].description %></p>
+            <p>Classroom ID: <em><%= classrooms[i]._id %></em></p>
+            <a href=<%= "/classroom/student/"+classrooms[i]._id %>>view classroom</a>
+        <% } %>
     </body>
 </html>
