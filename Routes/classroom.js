@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 // Importing user defined files and functions
 const CLASSROOM = require("../Models/classroom");
 const STUDENT = require("../Models/student");
+const ASSIGNMENT = require("../Models/assignment");
 const protected = require("../protected");
 
 // ---------- GET routes ----------
@@ -23,8 +24,11 @@ router.get("/faculty/:classroomID", async(req,res) => {
                 message: "You are not authorized. Login again."
             });
         }
+        const foundAssignments = await ASSIGNMENT.find({classroomID: req.params.classroomID});
         return res.status(200).render("classroom-faculty", {
-            classroom: foundClassroom
+            classroom: foundClassroom,
+            message: "",
+            assignments: foundAssignments
         });
     }
     catch(error) {

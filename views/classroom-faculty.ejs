@@ -10,5 +10,20 @@
         <p>Description: <%= classroom.description %></p>
         <p>Classroom ID: <em><%= classroom._id %></em></p>
         <p>Students can join this classroom using the above Classroom ID.</p>
+        <p><%= message %></p>
+        <hr>
+        <h2>Post assignments</h2>
+        <form action=<%= "/assignment/"+classroom._id %> method="post">
+            <input type="text" name="assignmentTitle" placeholder="Title"><br>
+            <textarea name="assignmentDescription" placeholder="Description" cols="30" rows="10"></textarea><br>
+            <button type="submit">Post</button>
+        </form>
+        <hr>
+        <h2>List of assignments</h2>
+        <% for(let i=0; i<assignments.length; i++) { %>
+            <h3><%= i+1 %>. <%= assignments[i].title %></h3>
+            <p><%= assignments[i].description %></p>
+            
+        <% } %>
     </body>
 </html>
