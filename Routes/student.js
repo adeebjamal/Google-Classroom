@@ -9,6 +9,23 @@ const protected = require("../protected");
 const OTPgenerator = require("../functions-and-middlewares/OTPgenerator");
 const send_OTP = require("../functions-and-middlewares/send_otp");
 
+// ---------- GET routes ----------
+router.get("/logout", async(req,res) => {
+    try {
+        res.clearCookie("JWT_token_student");
+        return res.status(200).render("homepage", {
+            message: "Logout successful."
+        });
+    }
+    catch(error) {
+        console.log(error);
+        return res.status(500).render("homepage", {
+            message: "Something went wrong, try again."
+        });
+    }
+});
+
+// ---------- POST routes ----------
 router.post("/register", async(req,res) => {
     try {
         // console.log(req.body.newName, req.body.newEmail, req.body.newPassword, req.body.confirmPassword);

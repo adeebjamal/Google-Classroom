@@ -7,7 +7,24 @@ const OTPgenerator = require("../functions-and-middlewares/OTPgenerator");
 const protected = require("../protected");
 const FACULTY = require("../Models/faculty");
 const STUDENT = require("../Models/student");
+const CLASSROOM = require("../Models/classroom");
 const send_OTP = require("../functions-and-middlewares/send_otp");
+
+// ---------- GET routes ----------
+router.get("/logout", async(req,res) => {
+    try {
+        res.clearCookie("JWT_token_faculty");
+        res.status(200).render("homepage", {
+            message: "Logout successful."
+        });
+    }
+    catch(error) {
+        console.log(error);
+        return res.status(500).render("homepage", {
+            message: "Something went wrong, try again."
+        });
+    }
+});
 
 // ---------- POST routes ----------
 router.post("/register", async(req,res) => {
@@ -106,13 +123,54 @@ router.post("/login", async(req,res) => {
         }
         const jwtToken = jwt.sign({ID: tempfaculty._id}, protected.SECRET_KEY);
         res.cookie("JWT_token_faculty", jwtToken);
+        const facultyClassrooms = await CLASSROOM.find({facultyID: tempfaculty._id});
         return res.status(200).render("faculty-dashboard", {
-            name: tempfaculty.name
+            name: tempfaculty.name,
+            message: "",
+            classrooms: facultyClassrooms
         });
     }
     catch(error) {
         console.log(error);
         res.status(500).render("homepage", {
+            message: "Something went wrong, try again."
+        });
+    }
+});
+
+router.post("/classroom", async(req,res) => {
+    try {
+        const receivedToken = req.cookies.JWT_token_faculty;
+        if(!receivedToken) {
+            return res.status(400).render("homepage", {
+                message: "You need to login first."
+            });
+        }
+        const decodedJWT = jwt.verify(receivedToken, protected.SECRET_KEY);
+        const foundFaculty = await FACULTY.findOne({_id: decodedJWT.ID});
+        if(!req.body.classroomName || !req.body.classroomDescription) {
+            return res.status(400).render("faculty-dashboard", {
+                name: foundFaculty.name,
+                message: "Please fill all the required fields.",
+                classrooms: facultyClassrooms
+            });
+        }
+        const createdClassroom = new CLASSROOM({
+            name: req.body.classroomName,
+            description: req.body.classroomDescription,
+            facultyID: foundFaculty._id
+        });
+        await createdClassroom.save();
+        const facultyClassrooms = await CLASSROOM.find({facultyID: foundFaculty._id});
+        return res.status(201).render("faculty-dashboard", {
+            name: foundFaculty.name,
+            message: "Classroom created successfully.",
+            classrooms: facultyClassrooms
+        });
+    }
+    catch(error) {
+        console.log(error);
+        return res.status(500).render("homepage", {
             message: "Something went wrong, try again."
         });
     }
