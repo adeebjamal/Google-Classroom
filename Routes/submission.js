@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const ASSIGNMENT = require("../Models/assignment");
 const SUBMISSION = require("../Models/submission");
 const STUDENT = require("../Models/student");
+const CLASSROOM = require("../Models/classroom");
 const protected = require("../protected");
 
 // ---------- GET routes ----------
@@ -90,6 +91,35 @@ router.post("/:assignmentID", async(req,res) => {
         console.log(error);
         return res.status(500).render("homepage", {
             message: "Something wrong happened, try again."
+        });
+    }
+});
+
+router.post("/evaluate/:submissionID", async(req,res) => {
+    try {
+        const receivedToken = req.cookies.JWT_token_faculty;
+        if(!receivedToken) {
+            return res.status(400).render("homepage", {
+                message: "You need to login first."
+            });
+        }
+        const decodedJWT = jwt.verify(receivedToken, protected.SECRET_KEY);
+        const foundSubmission = await SUBMISSION.findOne({_id: req.params.submissionID});
+        const foundAssignment  = await ASSIGNMENT.findOne({_id: foundSubmission.assignmentID});
+        const foundClassroom = await CLASSROOM.findOne({_id: foundAssignment.classroomID});
+        if(foundClassroom.facultyID !== decodedJWT.ID) {
+            return res.status(400).render("homepage", {
+                message: "You are not authorized. Try logging in."
+            });
+        }
+        foundSubmission.marks = req.body.marks;
+        await foundSubmission.save();
+        res.status(200).redirect("/submission/viewAll/"+foundAssignment._id);
+    }
+    catch(error) {
+        console.log(error);
+        return res.status(500).render("homepage", {
+            message: "Something went wrong, try again."
         });
     }
 });

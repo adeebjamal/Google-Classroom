@@ -13,6 +13,11 @@
             <p>Student ID: <%= submissions[i].studentID %></p>
             <p>Link: <%= submissions[i].link %></p>
             <p>Marks: <%= submissions[i].marks %></p>
+            <p>Award marks (Out of 10):</p>
+            <form action=<%= "/submission/evaluate/"+submissions[i]._id %> method="post">
+                <input type="text" name="marks" placeholder="Marks">
+                <button type="submit">Add marks</button>
+            </form>
         <% } %>
     </body>
 </html>
