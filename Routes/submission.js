@@ -18,8 +18,10 @@ router.get("/:assignmentID", async(req,res) => {
             });
         }
         const decodedJWT = jwt.verify(receivedToken, protected.SECRET_KEY);
-        const foundSubmission = await SUBMISSION.find({studentID: decodedJWT.ID});
-        return res.status(200).json(foundSubmission);
+        const foundSubmissions = await SUBMISSION.find({studentID: decodedJWT.ID, assignmentID: req.params.assignmentID});
+        return res.status(200).render("check-marks", {
+            submissions: foundSubmissions
+        });
     }
     catch(error) {
         console.log(error);
