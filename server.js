@@ -24,6 +24,7 @@ app.use("/faculty", require("./Routes/faculty"));
 app.use("/student", require("./Routes/student"));
 app.use("/classroom", require("./Routes/classroom"));
 app.use("/assignment", require("./Routes/assignment"));
+app.use("/submission", require("./Routes/submission"));
 
 app.listen(3000, () => {
     console.log("Server is running at port 3000. Go to http://localhost:3000");

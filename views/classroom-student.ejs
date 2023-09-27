@@ -12,8 +12,15 @@
         <hr>
         <h2>List of assignments</h2>
         <% for(let i=0; i<assignments.length; i++) { %>
+            <hr>
             <h3><%= i+1 %>. <%= assignments[i].title %></h3>
             <p>Description: <%= assignments[i].description %></p>
+            <p>Submit assignment: Paste the Google drive or Dropbox link of your assignment.</p>
+            <form action=<%= "/submission/"+assignments[i]._id %> method="post">
+                <input type="text" name="submissionLink" placeholder="Link of your assignment">
+                <button type="submit">Submit</button><br>
+            </form>
+            <a href=<%= "/submission/"+assignments[i]._id %>>View submission</a>
         <% } %>
     </body>
 </html>
