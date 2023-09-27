@@ -17,8 +17,37 @@ router.get("/:assignmentID", async(req,res) => {
             });
         }
         const decodedJWT = jwt.verify(receivedToken, protected.SECRET_KEY);
-        const foundSubmission = await SUBMISSION.findOne({studentID: decodedJWT.ID});
+        const foundSubmission = await SUBMISSION.find({studentID: decodedJWT.ID});
         return res.status(200).json(foundSubmission);
+    }
+    catch(error) {
+        console.log(error);
+        return res.status(500).render("homepage", {
+            message: "Something went wrong, try again."
+        });
+    }
+});
+
+router.get("/viewAll/:assignmentID", async(req,res) => {
+    try {
+        const receivedToken = req.cookies.JWT_token_faculty;
+        if(!receivedToken) {
+            return res.status(400).render("homepage", {
+                message: "You need to login first."
+            });
+        }
+        const decodedJWT = jwt.verify(receivedToken, protected.SECRET_KEY);
+        const foundAssignment = await ASSIGNMENT.findOne({_id: req.params.assignmentID});
+        if(foundAssignment.facultyID !== decodedJWT.ID) {
+            return res.status(400).render("homepage", {
+                message: "You are not authorized. Try logging in."
+            });
+        }
+        const foundSubmissions = await SUBMISSION.find({assignmentID: req.params.assignmentID});
+        return res.status(200).render("submissions", {
+            assignment: foundAssignment,
+            submissions: foundSubmissions
+        });
     }
     catch(error) {
         console.log(error);

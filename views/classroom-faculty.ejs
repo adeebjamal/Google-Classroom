@@ -18,12 +18,12 @@
             <textarea name="assignmentDescription" placeholder="Description" cols="30" rows="10"></textarea><br>
             <button type="submit">Post</button>
         </form>
-        <hr>
         <h2>List of assignments</h2>
         <% for(let i=0; i<assignments.length; i++) { %>
+            <hr>
             <h3><%= i+1 %>. <%= assignments[i].title %></h3>
             <p><%= assignments[i].description %></p>
-            
+            <a href=<%= "/submission/viewAll/"+assignments[i]._id %>>View submissions</a>
         <% } %>
     </body>
 </html>

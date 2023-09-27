@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Submissions list</title>
+    </head>
+    <body>
+        <h2>Title: <%= assignment.title %></h2>
+        <p>Description: <%= assignment.description %></p>
+        <br>
+        <% for(let i=0; i<submissions.length; i++) { %>
+            <hr>
+            <p>Student ID: <%= submissions[i].studentID %></p>
+            <p>Link: <%= submissions[i].link %></p>
+            <p>Marks: <%= submissions[i].marks %></p>
+        <% } %>
+    </body>
+</html>
