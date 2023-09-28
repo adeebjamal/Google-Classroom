@@ -32,6 +32,13 @@ router.get("/faculty/:classroomID", async(req,res) => {
         });
     }
     catch(error) {
+        console.log(error);
+        if(req.cookies.JWT_token_faculty) {
+            res.clearCookie("JWT_token_faculty");
+        }
+        if(req.cookies.JWT_token_student) {
+            res.clearCookie("JWT_token_student");
+        }
         return res.status(500).render("homepage", {
             message: "Something went wrong, try again."
         });
@@ -66,6 +73,12 @@ router.get("/student/:classroomID", async(req,res) => {
     }
     catch(error) {
         console.log(error);
+        if(req.cookies.JWT_token_faculty) {
+            res.clearCookie("JWT_token_faculty");
+        }
+        if(req.cookies.JWT_token_student) {
+            res.clearCookie("JWT_token_student");
+        }
         return res.status(500).render("homapage", {
             message: "Something went wrong, try again."
         });
@@ -94,6 +107,12 @@ router.post("/join", async(req,res) => {
     }
     catch(error) {
         console.log(error);
+        if(req.cookies.JWT_token_faculty) {
+            res.clearCookie("JWT_token_faculty");
+        }
+        if(req.cookies.JWT_token_student) {
+            res.clearCookie("JWT_token_student");
+        }
         return res.status(500).render("homepage", {
             message: "Something went wrong, try again."
         });
