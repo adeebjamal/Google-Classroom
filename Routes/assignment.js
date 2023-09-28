@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const protected = require("../protected");
 const CLASSROOM = require("../Models/classroom");
 const ASSIGNMENT = require("../Models/assignment");
+const send_notification = require("../functions-and-middlewares/send_notification");
 
 // ---------- POST routes ----------
 router.post("/:classroomID", async(req,res) => {
@@ -29,6 +30,7 @@ router.post("/:classroomID", async(req,res) => {
             facultyID: decodedJWT.ID
         });
         await createdAssignment.save();
+        send_notification(req.params.classroomID, req.body.assignmentTitle, req.body.assignmentDescription);
         const foundAssignments = await ASSIGNMENT.find({classroomID: foundClassroom._id});
         return res.status(201).render("classroom-faculty", {
             classroom: foundClassroom,
