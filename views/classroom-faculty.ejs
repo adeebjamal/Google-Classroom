@@ -11,6 +11,7 @@
         <p>Classroom ID: <em><%= classroom._id %></em></p>
         <p>Students can join this classroom using the above Classroom ID.</p>
         <p style="color: red;"><%= message %></p>
+        <p>Found a bug? <a href="mailto:bluefoxdevs@gmail.com">Inform</a> the developer.</p>
         <hr>
         <h2>Post assignments</h2>
         <form action=<%= "/assignment/"+classroom._id %> method="post">
