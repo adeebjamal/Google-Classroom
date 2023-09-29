@@ -23,11 +23,11 @@ The `server.js` file serves as the central hub of the web application, responsib
 
 * Routes<br>
 `app.use("/", require("./Routes/index"))`: Handles root-level requests using the routes defined in index.js.<br>
-`app.use("/faculty", require("./Routes/faculty"))`: Handles requests related to faculty functionality.
-`app.use("/student", require("./Routes/student"))`: Handles requests related to student functionality.
-`app.use("/classroom", require("./Routes/classroom"))`: Handles requests related to classroom functionality.
-`app.use("/assignment", require("./Routes/assignment"))`: Handles requests related to assignment functionality.
-`app.use("/submission", require("./Routes/submission"))`: Handles requests related to assignment submissions.
+`app.use("/faculty", require("./Routes/faculty"))`: Handles requests related to faculty functionality.<br>
+`app.use("/student", require("./Routes/student"))`: Handles requests related to student functionality.<br>
+`app.use("/classroom", require("./Routes/classroom"))`: Handles requests related to classroom functionality.<br>
+`app.use("/assignment", require("./Routes/assignment"))`: Handles requests related to assignment functionality.<br>
+`app.use("/submission", require("./Routes/submission"))`: Handles requests related to assignment submissions.<br>
 
 
 ## `protected.js` file in `/` folder
