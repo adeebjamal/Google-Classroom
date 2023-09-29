@@ -1,25 +1,27 @@
-# Google-Classroom
+# Google-Classroom-Clone
+The `Google Classroom Clone` project is a robust web application designed for educational institutions, enabling seamless communication and collaboration between faculty and students. Key features include secure user authentication, classroom creation and management, assignment posting and submission, real-time notifications, and detailed evaluation tools. Through intuitive interfaces for both faculty and students, the platform streamlines the learning process, fostering efficient assignment management and enhancing overall educational experiences.
+
 
 ## `server.js` file in `/` folder
 The `server.js` file serves as the central hub of the web application, responsible for handling incoming requests, managing the application's routes, and connecting to the database.
 
-* Express setup
+* Express setup<br>
 `express`: Initializes the Express.js application.<br>
 `ejs`: Template engine for rendering dynamic content.<br>
 `mongoose`: MongoDB object modeling tool for Node.js.<br>
 `cookieParser`: Middleware for handling cookies.<br>
 
-* Database Connection
+* Database Connection<br>
 `mongoose.set("strictQuery",false)`: Configures MongoDB to allow flexible querying.<br>
 `mongoose.connect(protected.mongoDB_atlas_url)`: Establishes a connection to the MongoDB Atlas database using a secure URL from the protected module.<br>
 
-* Middlewares
+* Middlewares<br>
 `express.urlencoded({extended: true})`: Parses incoming request bodies, allowing access to form data.<br>
 `express.json()`: Parses incoming JSON requests.<br>
 `cookieParser()`: Parses cookies attached to the incoming requests.<br>
 `app.set("view engine","ejs")`: Sets EJS as the view engine, enabling dynamic HTML rendering.<br>
 
-* Routes
+* Routes<br>
 `app.use("/", require("./Routes/index"))`: Handles root-level requests using the routes defined in index.js.<br>
 `app.use("/faculty", require("./Routes/faculty"))`: Handles requests related to faculty functionality.
 `app.use("/student", require("./Routes/student"))`: Handles requests related to student functionality.
