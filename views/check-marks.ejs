@@ -8,7 +8,7 @@
         <p>Found a bug? <a href="mailto:bluefoxdevs@gmail.com">Inform</a> the developer.</p>
         <% for(let i=0; i<submissions.length; i++) { %>
             <p>Assignemnt ID: <%= submissions[i].assignmentID %></p>
-            <p style="color: rgb(35, 112, 201)">Link: <%= submissions[i].link %></p>
+            <p>Link: <em style="color: rgb(35, 112, 201)"><%= submissions[i].link %></em></p>
             <p>Marks: <%= submissions[i].marks %></p>
             <hr>
         <% } %>
