@@ -11,6 +11,17 @@ const protected = require("../protected");
 // ---------- GET routes ----------
 router.get("/faculty/:classroomID", async(req,res) => {
     try {
+        if(!mongoose.Types.ObjectId.isValid(req.params.classroomID)) {
+            return res.status(400).json({
+                message: `Bad request. Classroom with ID: ${req.params.classroomID} doesn't exists.`
+            });
+        }
+        const foundClassroom = await CLASSROOM.findOne({_id: req.params.classroomID});
+        if(!foundClassroom) {
+            return res.status(400).json({
+                message: `Bad request. Classroom with ID: ${req.params.classroomID} doesn't exists.`
+            });
+        }
         const receivedToken = req.cookies.JWT_token_faculty;
         if(!receivedToken) {
             return res.status(400).render("homepage", {
@@ -18,7 +29,7 @@ router.get("/faculty/:classroomID", async(req,res) => {
             });
         }
         const decodedJWT = jwt.verify(receivedToken, protected.SECRET_KEY);
-        const foundClassroom = await CLASSROOM.findOne({_id: req.params.classroomID});
+        // const foundClassroom = await CLASSROOM.findOne({_id: req.params.classroomID});
         if(foundClassroom.facultyID !== decodedJWT.ID) {
             res.clearCookie("JWT_token_faculty");
             return res.status(400).render("homepage", {
@@ -48,6 +59,17 @@ router.get("/faculty/:classroomID", async(req,res) => {
 
 router.get("/student/:classroomID", async(req,res) => {
     try {
+        if(!mongoose.Types.ObjectId.isValid(req.params.classroomID)) {
+            return res.status(400).json({
+                message: `Bad request. Classroom with ID: ${req.params.classroomID} doesn't exists.`
+            });
+        }
+        const foundClassroom = await CLASSROOM.findOne({_id: req.params.classroomID});
+        if(!foundClassroom) {
+            return res.status(400).json({
+                message: `Bad request. Classroom with ID: ${req.params.classroomID} doesn't exists.`
+            });
+        }
         const receivedToken = req.cookies.JWT_token_student;
         if(!receivedToken) {
             return res.status(400).render("homepage", {
@@ -57,7 +79,7 @@ router.get("/student/:classroomID", async(req,res) => {
         const decodedJWT = jwt.verify(receivedToken, protected.SECRET_KEY);
         const foundStudent = await STUDENT.findOne({_id: decodedJWT.ID});
         if(foundStudent.classrooms.includes(req.params.classroomID)) {
-            const foundClassroom = await CLASSROOM.findOne({_id: req.params.classroomID});
+            // const foundClassroom = await CLASSROOM.findOne({_id: req.params.classroomID});
             const foundAssignments = await ASSIGNMENT.find({classroomID: req.params.classroomID});
             return res.status(200).render("classroom-student", {
                 classroom: foundClassroom,
