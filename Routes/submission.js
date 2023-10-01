@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
 
 // Importing user defined files and functions
 const ASSIGNMENT = require("../Models/assignment");
@@ -11,6 +12,17 @@ const protected = require("../protected");
 // ---------- GET routes ----------
 router.get("/:assignmentID", async(req,res) => {
     try {
+        if(!mongoose.Types.ObjectId.isValid(req.params.assignmentID)) {
+            return res.status(400).json({
+                message: `Assignment with ID: ${req.params.assignmentID} doesn't exists.`
+            });
+        }
+        const assignment = await ASSIGNMENT.findOne({_id: req.params.assignmentID});
+        if(!assignment) {
+            return res.status(400).json({
+                message: `Assignment with ID: ${req.params.assignmentID} doesn't exists.`
+            });
+        }
         const receivedToken = req.cookies.JWT_token_student;
         if(!receivedToken) {
             return res.status(400).render("homepage", {
@@ -39,6 +51,17 @@ router.get("/:assignmentID", async(req,res) => {
 
 router.get("/viewAll/:assignmentID", async(req,res) => {
     try {
+        if(!mongoose.Types.ObjectId.isValid(req.params.assignmentID)) {
+            return res.status(400).json({
+                message: `Assignment with ID: ${req.params.assignmentID} doesn't exists.`
+            });
+        }
+        const foundAssignment = await ASSIGNMENT.findOne({_id: req.params.assignmentID});
+        if(!foundAssignment) {
+            return res.status(400).json({
+                message: `Assignment with ID: ${req.params.assignmentID} doesn't exists.`
+            });
+        }
         const receivedToken = req.cookies.JWT_token_faculty;
         if(!receivedToken) {
             return res.status(400).render("homepage", {
@@ -46,7 +69,7 @@ router.get("/viewAll/:assignmentID", async(req,res) => {
             });
         }
         const decodedJWT = jwt.verify(receivedToken, protected.SECRET_KEY);
-        const foundAssignment = await ASSIGNMENT.findOne({_id: req.params.assignmentID});
+        // const foundAssignment = await ASSIGNMENT.findOne({_id: req.params.assignmentID});
         if(foundAssignment.facultyID !== decodedJWT.ID) {
             return res.status(400).render("homepage", {
                 message: "You are not authorized. Try logging in."
@@ -75,13 +98,24 @@ router.get("/viewAll/:assignmentID", async(req,res) => {
 // ---------- POST routes ----------
 router.post("/:assignmentID", async(req,res) => {
     try {
+        if(!mongoose.Types.ObjectId.isValid(req.params.assignmentID)) {
+            return res.status(400).json({
+                message: `Assignment with ID: ${req.params.assignmentID} doesn't exists.`
+            });
+        }
+        const foundAssignment = await ASSIGNMENT.findOne({_id: req.params.assignmentID});
+        if(!foundAssignment) {
+            return res.status(400).json({
+                message: `Assignment with ID: ${req.params.assignmentID} doesn't exists.`
+            });
+        }
         const receivedToken = req.cookies.JWT_token_student;
         if(!receivedToken) {
             return res.status(400).render("homepage", {
                 message: "You need to login first."
             });
         }
-        const foundAssignment = await ASSIGNMENT.findOne({_id: req.params.assignmentID});
+        // const foundAssignment = await ASSIGNMENT.findOne({_id: req.params.assignmentID});
         const decodedJWT = jwt.verify(receivedToken, protected.SECRET_KEY);
         const foundStudent = await STUDENT.findOne({_id: decodedJWT.ID});
         if(foundStudent.classrooms.includes(foundAssignment.classroomID)) {
@@ -117,6 +151,17 @@ router.post("/:assignmentID", async(req,res) => {
 
 router.post("/evaluate/:submissionID", async(req,res) => {
     try {
+        if(!mongoose.Types.ObjectId.isValid(req.params.submissionID)) {
+            return res.status(400).json({
+                message: `Submission with ID: ${req.params.submissionID} doesn't exists.`
+            });
+        }
+        const foundSubmission = await SUBMISSION.findOne({_id: req.params.submissionID});
+        if(!foundSubmission) {
+            return res.status(400).json({
+                message: `Submission with ID: ${req.params.submissionID} doesn't exists.`
+            });
+        }
         const receivedToken = req.cookies.JWT_token_faculty;
         if(!receivedToken) {
             return res.status(400).render("homepage", {
@@ -124,7 +169,7 @@ router.post("/evaluate/:submissionID", async(req,res) => {
             });
         }
         const decodedJWT = jwt.verify(receivedToken, protected.SECRET_KEY);
-        const foundSubmission = await SUBMISSION.findOne({_id: req.params.submissionID});
+        // const foundSubmission = await SUBMISSION.findOne({_id: req.params.submissionID});
         const foundAssignment  = await ASSIGNMENT.findOne({_id: foundSubmission.assignmentID});
         const foundClassroom = await CLASSROOM.findOne({_id: foundAssignment.classroomID});
         if(foundClassroom.facultyID !== decodedJWT.ID) {
