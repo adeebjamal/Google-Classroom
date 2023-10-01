@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
 
 // Importing user defined files and functions
 const CLASSROOM = require("../Models/classroom");
@@ -88,6 +89,17 @@ router.get("/student/:classroomID", async(req,res) => {
 // ---------- POST routes ----------
 router.post("/join", async(req,res) => {
     try {
+        if(!mongoose.Types.ObjectId.isValid(req.body.classroomID)) {
+            return res.status(400).json({
+                message: `Bad request. Classroom with ID: ${req.body.classroomID} doesn't exists.`
+            });
+        }
+        const foundClass = await CLASSROOM.findOne({_id: req.body.classroomID});
+        if(!foundClass) {
+            return res.status(400).json({
+                message: `Bad request. Classroom with ID: ${req.body.classroomID} doesn't exists.`
+            });
+        }
         const receivedToken = req.cookies.JWT_token_student;
         if(!receivedToken) {
             return res.status(400).render("homepage", {
@@ -96,6 +108,11 @@ router.post("/join", async(req,res) => {
         }
         const decodedJWT = jwt.verify(receivedToken, protected.SECRET_KEY);
         const foundStudent = await STUDENT.findOne({_id: decodedJWT.ID});
+        if(foundStudent.classrooms.includes(req.body.classroomID)) {
+            return res.status(400).json({
+                message: `Bad request. You've already joined this classroom.`
+            });
+        }
         foundStudent.classrooms.push(req.body.classroomID);
         await foundStudent.save();
         const foundClassrooms = await CLASSROOM.find({_id: {$in: foundStudent.classrooms}});
