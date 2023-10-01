@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
 
 // Importing user defined files and functions
 const protected = require("../protected");
@@ -10,6 +11,17 @@ const send_notification = require("../functions-and-middlewares/send_notificatio
 // ---------- POST routes ----------
 router.post("/:classroomID", async(req,res) => {
     try {
+        if(!mongoose.Types.ObjectId.isValid(req.params.classroomID)) {
+            return res.status(400).json({
+                message: `Bad request. Classroom with ID: ${req.params.classroomID} doesn't exists.`
+            });
+        }
+        const foundClassroom = await CLASSROOM.findOne({_id: req.params.classroomID});
+        if(!foundClassroom) {
+            return res.status(400).json({
+                message: `Bad request. Classroom with ID: ${req.params.classroomID} doesn't exists.`
+            });
+        }
         const receivedToken = req.cookies.JWT_token_faculty;
         if(!receivedToken) {
             return res.status(400).render("homepage", {
@@ -17,7 +29,7 @@ router.post("/:classroomID", async(req,res) => {
             });
         }
         const decodedJWT = jwt.verify(receivedToken, protected.SECRET_KEY);
-        const foundClassroom = await CLASSROOM.findOne({_id: req.params.classroomID});
+        // const foundClassroom = await CLASSROOM.findOne({_id: req.params.classroomID});
         if(foundClassroom.facultyID !== decodedJWT.ID) {
             return res.status(400).render("homepage", {
                 message: "You are not authorized. Login first."
